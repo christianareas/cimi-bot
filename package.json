@@ -1,0 +1,27 @@
+{
+  "name": "cimi-bot",
+  "version": "0.1.0",
+  "description": "CIMI Bot",
+  "author": "Christian Areas <christian@runwithcimi.org>",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "reinstall": "rm -rf node_modules package-lock.json && npm i",
+    "update:latest": "npx -y npm-check-updates -u && npm i && npm dedupe && npm outdated && npm ls",
+    "biome:check": "npx biome check",
+    "biome:check:write": "npx biome check --write",
+    "biome:check:write:unsafe": "npx biome check --write --unsafe"
+  },
+  "dependencies": {
+    "@slack/bolt": "^4.6.0",
+    "googleapis": "^171.4.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.6",
+    "@types/node": "^25.3.5",
+    "typescript": "^5.9.3"
+  }
+}
