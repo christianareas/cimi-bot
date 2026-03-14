@@ -61,13 +61,25 @@ export function registerCreateGoogleAccount(app: App): void {
 
 	app.view(callbackId, async ({ ack, view, body, client }) => {
 		const v = view.state.values
+		const personalEmail = v.personal_email.value.value?.trim() ?? ""
 		const username = v.username.value.value?.trim() ?? ""
+
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalEmail)) {
+			await ack({
+				response_action: "errors",
+				errors: {
+					personal_email: "Enter a valid email address.",
+				},
+			})
+			return
+		}
 
 		if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
 			await ack({
 				response_action: "errors",
 				errors: {
-					username: "Use only letters, numbers, dots, hyphens, or underscores.",
+					username:
+						"You can only use letters, numbers, dots, hyphens, or underscores.",
 				},
 			})
 			return
@@ -75,7 +87,6 @@ export function registerCreateGoogleAccount(app: App): void {
 
 		await ack()
 
-		const personalEmail = v.personal_email.value.value ?? ""
 		const firstName = v.first_name.value.value ?? ""
 		const lastName = v.last_name.value.value ?? ""
 		const officialEmail = `${username}@${domain}`
@@ -143,10 +154,10 @@ function buildModal() {
 				block_id: "personal_email",
 				label: {
 					type: "plain_text",
-					text: "Personal Email",
+					text: "Personal Email Address",
 				},
 				element: {
-					type: "plain_text_input",
+					type: "email_text_input",
 					action_id: "value",
 					placeholder: {
 						type: "plain_text",
@@ -189,14 +200,14 @@ function buildModal() {
 				block_id: "username",
 				label: {
 					type: "plain_text",
-					text: `Official Email (@${domain})`,
+					text: `Official Email Address`,
 				},
 				element: {
 					type: "plain_text_input",
 					action_id: "value",
 					placeholder: {
 						type: "plain_text",
-						text: "someone",
+						text: `someone (don’t include @${domain})`,
 					},
 				},
 			},
